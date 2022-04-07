@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_quiz/answer.dart';
-import 'package:flutter_quiz/question.dart';
+import 'package:flutter_quiz/result.dart';
+import './quiz.dart';
 
 // void main() {
 //   runApp(MyApp());
@@ -17,62 +17,73 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+   final _questions = const [
+    {
+      'questionText' : 'What\'s your favorite color?',
+      'answers' :
+      [
+        {'text' : 'Black', 'score' : 10},
+        {'text' : 'Red', 'score' : 5},
+        {'text' : 'Green', 'score' : 3},
+        {'text' : 'Yellow', 'score' : 1}
+      ],
+    },
+    {
+      'questionText' : 'What\'s your favorite Animal?',
+      'answers' :
+      [
+        {'text' : 'Rabbit', 'score' : 10},
+        {'text' : 'Snake', 'score' : 6},
+        {'text' : 'Yak', 'score' : 4},
+        {'text' : 'Cat', 'score' : 2}
+      ],
+    },
+    {
+      'questionText' : 'Who\'s your favorite instructor?',
+      'answers' :
+      [
+        {'text' : 'Max', 'score' : 10},
+        {'text' : 'Mark', 'score' : 9},
+        {'text' : 'Green', 'score' : 7},
+        {'text' : 'Roy', 'score' : 6}
+      ],
+    },
+  ];
   var _questionIndex = 0;
-  void _answerQuestion() {
+  var _totalScore = 0;
+
+  void _resetQuiz() {
+    setState(() {
+      _questionIndex = 0;
+      _totalScore = 0;
+    });
+  }
+
+  void _answerQuestion(int score) {
+
+    // _totalScore = _totalScore + score;
+    _totalScore += score;
     setState(() {
       _questionIndex = _questionIndex + 1;
     });
+
+    // if(_questionIndex < _questions.length)
+    // {
+    //   print('we have more question');
+    // }
   }
   @override
   Widget build(BuildContext context) {
-    var questions = [
-      'What\'s your favorite color?',
-      'What\'s your favorite Animal?',
-    ];
-
-    // var questions = [
-    //   {
-    //     'questionText' : 'What\'s your favorite color?',
-    //     'answer' : ['Black', 'Red', 'Green', 'Yellow'],
-    //   },
-    //   {
-    //     'questionText' : 'What\'s your favorite Animal?',
-    //     'answer' : ['Rabbit', 'Snakw', 'Yak', 'Cat'],
-    //   },
-    //   {
-    //     'questionText' : 'Who\'s your favorite instructor?',
-    //     'answer' : ['Max', 'Mark', 'Green', 'Roy'],
-    //   },
-    // ];
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
           title: Text('My First App'),
         ),
-        body: Column(
-          children: [
-            Question(
-                questions[_questionIndex]
-            ),
-            Answer(_answerQuestion),
-            Answer(_answerQuestion),
-            Answer(_answerQuestion),
-            // RaisedButton(
-            //     child: Text('Answer 1'),
-            //     onPressed: _answerQuestion,
-            // ),
-            // RaisedButton(
-            //     child: Text('Answer 2'),
-            //     onPressed: () => print('Answer 2'),
-            // ),
-            // RaisedButton(
-            //     child: Text('Answer 2'),
-            //     onPressed: () {
-            //       print('Answer 3');
-            //     },
-            // ),
-          ],
-        ),
+        body: _questionIndex < _questions.length ? Quiz(
+          answerQuestion: _answerQuestion,
+          questionIndex: _questionIndex,
+          questions: _questions,
+        ) : Result(_totalScore, _resetQuiz),
       ),
     );
   }
